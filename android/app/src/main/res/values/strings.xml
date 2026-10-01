@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">StarVelocity</string>
+
+    <string name="window_day">Day</string>
+    <string name="window_week">Week</string>
+    <string name="window_month">Month</string>
+    <string name="filter_all">All</string>
+    <string name="repos_tracked">repos</string>
+    <string name="days_of_history">days of history</string>
+    <string name="per_day">/d</string>
+
+    <string name="not_yet_known">not yet known</string>
+    <string name="velocity_pending_title">Velocity is still accumulating</string>
+    <string name="velocity_pending_body">The collector has %1$d day(s) of history so far, which is not enough to derive this window. The list below is ordered by total stars — a different measure, labelled as such.</string>
+    <string name="showing_cached">Showing a cached copy from about %1$d hour(s) ago.</string>
+    <string name="error_offline">Could not load and nothing is cached yet: %1$s</string>
+
+    <string name="stars">Stars</string>
+    <string name="forks">Forks</string>
+    <string name="language">Language</string>
+    <string name="license">License</string>
+    <string name="velocity_7d">Star gain, 7d</string>
+    <string name="open_on_github">Open on GitHub</string>
+
+    <string name="theme">Theme</string>
+    <string name="theme_system">Follow system</string>
+    <string name="theme_light">Light</string>
+    <string name="theme_dark">Dark</string>
+
+    <string name="channel_digest">Daily digest</string>
+    <string name="channel_digest_desc">One notification a day naming the repositories that climbed fastest.</string>
+    <string name="digest_title">Climbing today</string>
+</resources>

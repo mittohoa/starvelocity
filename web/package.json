@@ -1,0 +1,24 @@
+{
+  "name": "starvelocity-web",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build && node scripts/prune-rsc.mjs out && node --disable-warning=ExperimentalWarning scripts/emit-api.mjs out",
+    "start": "npx serve out",
+    "typecheck": "tsc --noEmit",
+    "build:raw": "next build",
+    "emit-api": "node --disable-warning=ExperimentalWarning scripts/emit-api.mjs out"
+  },
+  "dependencies": {
+    "next": "^16.3.6",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.2",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "typescript": "^7.0.2"
+  }
+}

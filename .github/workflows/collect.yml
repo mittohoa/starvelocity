@@ -1,0 +1,89 @@
+name: collect
+
+# Free-tier scheduler. On a PUBLIC repository, Actions minutes are unmetered,
+# so this costs nothing to run. Two caveats that bite people:
+#   - GitHub disables scheduled workflows after 60 days with no repository
+#     activity. The keepalive step below writes a marker file to prevent that.
+#   - Cron firing is best-effort and can be delayed by 10+ minutes at peak times.
+#     Snapshots are keyed by UTC day, so a late run still lands on the right day.
+on:
+  schedule:
+    # 02:10 and 14:10 UTC. Two runs a day means a failed run has a second
+    # chance to land a row for the day rather than losing that day forever.
+    - cron: '10 2 * * *'
+    - cron: '10 14 * * *'
+  workflow_dispatch:
+    inputs:
+      force_discover:
+        description: 'Run discovery even if it ran recently'
+        type: boolean
+        default: false
+
+concurrency:
+  group: collect
+  cancel-in-progress: false
+
+permissions:
+  contents: write # needed to publish the database as a release asset
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 50
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      # The database lives as a release asset, not in git. Committing a growing
+      # binary every day would balloon the repository; a release asset is
+      # replaced in place and stays free.
+      - name: Restore database
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          mkdir -p data
+          if gh release download db --pattern 'starvelocity.db.gz' --clobber 2>/dev/null; then
+            gunzip -c starvelocity.db.gz > data/starvelocity.db
+            echo "restored $(du -h data/starvelocity.db | cut -f1) database"
+          else
+            echo "no existing database — starting fresh"
+          fi
+
+      - name: Run collector
+        env:
+          # A classic PAT with no scopes gets the full 5,000 req/hour budget.
+          # The built-in token works too but is capped lower (1,000/hour/repo),
+          # which is still enough for one cycle.
+          GITHUB_TOKEN: ${{ secrets.COLLECTOR_TOKEN || secrets.GITHUB_TOKEN }}
+          MAX_TRACKED_REPOS: '5000'
+          LOG_LEVEL: info
+        run: |
+          node --disable-warning=ExperimentalWarning src/cli.ts run \
+            ${{ inputs.force_discover && '--force' || '' }}
+          node --disable-warning=ExperimentalWarning src/cli.ts stats
+
+      - name: Publish database
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gzip -9 -c data/starvelocity.db > starvelocity.db.gz
+          ls -lh starvelocity.db.gz
+          gh release view db >/dev/null 2>&1 || \
+            gh release create db --title 'Collector database' --notes 'Rolling SQLite snapshot. Replaced on every run.'
+          gh release upload db starvelocity.db.gz --clobber
+
+      # Scheduled workflows are switched off after 60 days of repo inactivity.
+      # A dated marker commit keeps the repository "active" indefinitely.
+      - name: Keepalive
+        if: github.event_name == 'schedule'
+        run: |
+          date -u +%Y-%m-%dT%H:%M:%SZ > .github/last-collect
+          git config user.name 'collector'
+          git config user.email 'collector@users.noreply.github.com'
+          git add .github/last-collect
+          git diff --cached --quiet || git commit -m 'chore: collector heartbeat [skip ci]'
+          git push

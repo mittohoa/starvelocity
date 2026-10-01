@@ -1,0 +1,23 @@
+{
+  "name": "starvelocity-collector",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Phase 1 — GitHub repo discovery, daily metric snapshots and star-velocity computation.",
+  "engines": { "node": ">=22.18.0" },
+  "scripts": {
+    "migrate":  "node --disable-warning=ExperimentalWarning src/cli.ts migrate",
+    "discover": "node --disable-warning=ExperimentalWarning src/cli.ts discover",
+    "snapshot": "node --disable-warning=ExperimentalWarning src/cli.ts snapshot",
+    "velocity": "node --disable-warning=ExperimentalWarning src/cli.ts velocity",
+    "backfill": "node --disable-warning=ExperimentalWarning src/cli.ts backfill",
+    "run":      "node --disable-warning=ExperimentalWarning src/cli.ts run",
+    "stats":    "node --disable-warning=ExperimentalWarning src/cli.ts stats",
+    "top":      "node --disable-warning=ExperimentalWarning src/cli.ts top",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "typescript": "^5.7.0"
+  }
+}

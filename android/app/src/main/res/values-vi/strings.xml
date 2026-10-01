@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="window_day">Ngày</string>
+    <string name="window_week">Tuần</string>
+    <string name="window_month">Tháng</string>
+    <string name="filter_all">Tất cả</string>
+    <string name="repos_tracked">repo</string>
+    <string name="days_of_history">ngày dữ liệu</string>
+    <string name="per_day">/ngày</string>
+
+    <string name="not_yet_known">chưa xác định</string>
+    <string name="velocity_pending_title">Dữ liệu velocity đang được tích lũy</string>
+    <string name="velocity_pending_body">Collector mới có %1$d ngày dữ liệu, chưa đủ để tính cửa sổ này. Danh sách dưới đây sắp theo tổng star — một chỉ số khác, và được ghi rõ như vậy.</string>
+    <string name="showing_cached">Đang hiển thị bản lưu cache khoảng %1$d giờ trước.</string>
+    <string name="error_offline">Không tải được và chưa có bản cache nào: %1$s</string>
+
+    <string name="stars">Star</string>
+    <string name="forks">Fork</string>
+    <string name="language">Ngôn ngữ</string>
+    <string name="license">Giấy phép</string>
+    <string name="velocity_7d">Star tăng, 7 ngày</string>
+    <string name="open_on_github">Mở trên GitHub</string>
+
+    <string name="theme">Giao diện</string>
+    <string name="theme_system">Theo hệ thống</string>
+    <string name="theme_light">Sáng</string>
+    <string name="theme_dark">Tối</string>
+
+    <string name="channel_digest">Bản tin hằng ngày</string>
+    <string name="channel_digest_desc">Mỗi ngày một thông báo, nêu tên các repo tăng nhanh nhất.</string>
+    <string name="digest_title">Tăng trong hôm nay</string>
+</resources>

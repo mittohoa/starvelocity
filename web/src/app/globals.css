@@ -1,0 +1,1207 @@
+/* ------------------------------------------------------------------ tokens
+   Light is the base definition; dark only overrides. Every colour is defined
+   once on :root so nothing can end up with its only definition inside a media
+   query and disappear in the other theme.
+
+   The palette is warm-neutral rather than grey: the background, surfaces and
+   borders all carry a faint magenta cast that ties them to the accent. Pure
+   grey next to a magenta accent reads as two unrelated systems. */
+
+:root {
+  --bg: #fcf9fb;
+  --surface: #ffffff;
+  --surface-2: #faf4f7;
+  --border: #ece3e8;
+  --border-strong: #ddd0d8;
+  --hair: rgb(30 12 24 / 5%);
+
+  --text: #191519;
+  --text-muted: #6a626e;
+  --text-faint: #948c97;
+
+  --accent: #cf2070;
+  --accent-hover: #b81a61;
+  --accent-soft: #fdeaf3;
+  --accent-line: #f3c9dd;
+
+  --up: #12784f;
+  --up-soft: #e4f4ec;
+  --down: #b0362f;
+
+  --warn-bg: #fff8e8;
+  --warn-border: #f2dfb4;
+  --warn-text: #6d4e05;
+
+  --gold: #d9a441;
+  --silver: #a9a6ad;
+  --bronze: #bd7a4a;
+
+  --radius-sm: 7px;
+  --radius: 10px;
+  --radius-lg: 14px;
+  --shadow: 0 1px 2px rgb(60 20 50 / 5%);
+  --shadow-lift: 0 8px 30px rgb(60 20 50 / 10%);
+
+  /* next/font injects the two variable fonts; the fallbacks keep the page
+     readable if the font files ever fail to load. */
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto,
+    'Noto Sans', sans-serif;
+  /* Display is deliberately a system stack: zero bytes to download, and the
+     heavy grotesque it resolves to is exactly the look large headlines want. */
+  --font-display: 'Helvetica Neue', 'Arial Nova', Helvetica, Arial, var(--font-inter), system-ui,
+    sans-serif;
+  --font-mono: var(--font-jetbrains), ui-monospace, 'SF Mono', 'Cascadia Code', Menlo, Consolas,
+    monospace;
+
+  --max-width: 1160px;
+  --header-h: 64px;
+}
+
+/* Dark palette. It has to be declared twice — once for viewers who never
+   touched the toggle (system preference) and once for viewers who explicitly
+   chose dark — because CSS has no way to share one declaration block between a
+   media query and an attribute selector. The `:not([data-theme='light'])` guard
+   is what lets an explicit "light" choice win on a dark-mode system. */
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+  --bg: #0d1117;
+  --surface: #161b22;
+  --surface-2: #12161d;
+  --border: #2a303a;
+  --border-strong: #3a424f;
+  --hair: rgb(255 255 255 / 6%);
+
+  --text: #e6edf3;
+  --text-muted: #9198a1;
+  --text-faint: #6d747e;
+
+  --accent: #ff6fb5;
+  --accent-hover: #ff8ac4;
+  --accent-soft: #2a1523;
+  --accent-line: #5c2745;
+
+  --up: #3fb950;
+  --up-soft: #12261d;
+  --down: #f85149;
+
+  --warn-bg: #221b0d;
+  --warn-border: #3d3118;
+  --warn-text: #d6bd82;
+
+  --gold: #d9a441;
+  --silver: #8b8791;
+  --bronze: #a56a3f;
+
+  --shadow: 0 1px 2px rgb(0 0 0 / 40%);
+  --shadow-lift: 0 12px 40px rgb(0 0 0 / 55%);
+  }
+}
+
+:root[data-theme='dark'] {
+  --bg: #0d1117;
+  --surface: #161b22;
+  --surface-2: #12161d;
+  --border: #2a303a;
+  --border-strong: #3a424f;
+  --hair: rgb(255 255 255 / 6%);
+
+  --text: #e6edf3;
+  --text-muted: #9198a1;
+  --text-faint: #6d747e;
+
+  --accent: #ff6fb5;
+  --accent-hover: #ff8ac4;
+  --accent-soft: #2a1523;
+  --accent-line: #5c2745;
+
+  --up: #3fb950;
+  --up-soft: #12261d;
+  --down: #f85149;
+
+  --warn-bg: #221b0d;
+  --warn-border: #3d3118;
+  --warn-text: #d6bd82;
+
+  --gold: #d9a441;
+  --silver: #8b8791;
+  --bronze: #a56a3f;
+
+  --shadow: 0 1px 2px rgb(0 0 0 / 40%);
+  --shadow-lift: 0 12px 40px rgb(0 0 0 / 55%);
+}
+
+/* ------------------------------------------------------------------- reset */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: 15px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+h1,
+h2,
+h3 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  line-height: 1.1;
+}
+
+h1 {
+  font-size: clamp(2.3rem, 1.5rem + 3.2vw, 3.5rem);
+  letter-spacing: -0.035em;
+  line-height: 1.02;
+}
+
+h2 {
+  font-size: clamp(1.5rem, 1.2rem + 1vw, 2rem);
+}
+
+h3 {
+  font-size: 1.05rem;
+  letter-spacing: -0.015em;
+}
+
+p {
+  margin: 0 0 0.85em;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Numbers should never jitter between rows as values change. */
+.mono,
+.num,
+.figure-main,
+.stat__value {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ------------------------------------------------------------------ layout */
+
+.wrap {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.site-header {
+  border-bottom: 1px solid var(--border);
+  background: color-mix(in srgb, var(--surface) 82%, transparent);
+  backdrop-filter: saturate(1.4) blur(10px);
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
+
+.site-header__inner {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  height: var(--header-h);
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.25rem;
+  letter-spacing: -0.03em;
+  white-space: nowrap;
+}
+
+.brand__mark {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: var(--accent);
+  color: #fff;
+  font-size: 0.8rem;
+  line-height: 1;
+}
+
+/* Centred nav, brand and controls pinned to the edges. */
+.nav {
+  display: flex;
+  gap: 26px;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  flex-wrap: wrap;
+  font-size: 0.9rem;
+}
+
+.nav a {
+  position: relative;
+  color: var(--text-muted);
+  font-weight: 500;
+  padding: 21px 0;
+}
+
+.nav a:hover {
+  color: var(--text);
+}
+
+.nav a[aria-current='page'] {
+  color: var(--text);
+}
+
+.nav a[aria-current='page']::after {
+  content: '';
+  position: absolute;
+  inset: auto 0 -1px;
+  height: 2px;
+  background: var(--accent);
+  border-radius: 2px 2px 0 0;
+}
+
+.lang-switch {
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 5px 13px;
+  white-space: nowrap;
+}
+
+.lang-switch:hover {
+  color: var(--accent);
+  border-color: var(--accent-line);
+  background: var(--accent-soft);
+}
+
+main {
+  padding: 48px 0 80px;
+}
+
+.site-footer {
+  border-top: 1px solid var(--border);
+  padding: 30px 0 52px;
+  color: var(--text-faint);
+  font-size: 0.85rem;
+}
+
+.site-footer a {
+  color: var(--text-muted);
+  text-decoration: underline;
+  text-decoration-color: var(--border-strong);
+  text-underline-offset: 2px;
+}
+
+.footer-row {
+  display: flex;
+  gap: 8px 22px;
+  flex-wrap: wrap;
+  align-items: baseline;
+}
+
+/* --------------------------------------------------------------- hero */
+
+.hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+  gap: 48px;
+  align-items: start;
+}
+
+@media (max-width: 940px) {
+  .hero {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+}
+
+/* Two-tone headline: the second clause carries the accent, which puts the
+   emphasis on the claim that distinguishes the product. */
+.hero h1 .accent {
+  color: var(--accent);
+  display: block;
+}
+
+.pill-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid var(--accent-line);
+  background: var(--accent-soft);
+  color: var(--accent);
+  border-radius: 999px;
+  padding: 5px 14px;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 500;
+  margin-bottom: 22px;
+}
+
+.pill-badge::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentcolor;
+}
+
+.lead {
+  font-size: 1.06rem;
+  color: var(--text-muted);
+  max-width: 52ch;
+  line-height: 1.65;
+}
+
+/* Inline stat row — lighter than a bordered grid, which is too much furniture
+   for four numbers. */
+.stat-row {
+  display: flex;
+  gap: 38px;
+  flex-wrap: wrap;
+  margin-top: 34px;
+}
+
+.stat__value {
+  font-size: 1.55rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+.stat__label {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+/* --------------------------------------------------------------- panel */
+
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lift);
+  overflow: hidden;
+}
+
+.panel__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 16px 18px;
+  border-bottom: 1px solid var(--border);
+}
+
+.panel__title {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.05rem;
+  letter-spacing: -0.02em;
+}
+
+.panel__title svg {
+  color: var(--accent);
+}
+
+.panel__foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 18px;
+  border-top: 1px solid var(--border);
+  background: var(--surface-2);
+  font-size: 0.8rem;
+  color: var(--text-faint);
+}
+
+.panel__foot a {
+  color: var(--accent);
+  font-weight: 550;
+  white-space: nowrap;
+}
+
+/* Compact ranked rows used inside the hero panel. */
+.mini-row {
+  display: grid;
+  grid-template-columns: 22px 1fr auto;
+  gap: 12px;
+  align-items: center;
+  padding: 11px 18px;
+  border-bottom: 1px solid var(--border);
+}
+
+.mini-row:last-child {
+  border-bottom: none;
+}
+
+.mini-row:hover {
+  background: var(--surface-2);
+}
+
+.mini-row__rank {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  color: var(--text-faint);
+  text-align: right;
+}
+
+.mini-row__name {
+  font-family: var(--font-mono);
+  font-size: 0.88rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mini-row__name b {
+  font-weight: 700;
+}
+
+.mini-row__name span {
+  color: var(--text-muted);
+}
+
+.mini-row__figure {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+/* ------------------------------------------------------------- sections */
+
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--accent);
+  font-weight: 500;
+  margin-bottom: 14px;
+}
+
+.eyebrow a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.section {
+  margin-top: 56px;
+}
+
+.section__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.section__head a {
+  font-size: 0.875rem;
+  font-weight: 550;
+  color: var(--accent);
+  white-space: nowrap;
+}
+
+.section__head a:hover {
+  color: var(--accent-hover);
+}
+
+/* --------------------------------------------------------------- notice */
+
+.notice {
+  background: var(--warn-bg);
+  border: 1px solid var(--warn-border);
+  color: var(--warn-text);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  font-size: 0.9rem;
+  margin: 0 0 24px;
+}
+
+.notice strong {
+  display: block;
+  margin-bottom: 4px;
+}
+
+.notice p {
+  margin: 0;
+}
+
+/* --------------------------------------------------------------- buttons */
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  border: 1px solid var(--border-strong);
+  background: var(--surface);
+  color: var(--text);
+  padding: 11px 20px;
+  border-radius: var(--radius);
+  font-size: 0.925rem;
+  font-weight: 600;
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+
+.button:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.button--primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+.button--primary:hover {
+  background: var(--accent-hover);
+  border-color: var(--accent-hover);
+  color: #fff;
+}
+
+.cta-row {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 28px;
+}
+
+/* ---------------------------------------------------------------- badges */
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  padding: 2px 9px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  background: var(--surface-2);
+  white-space: nowrap;
+}
+
+.badge--up {
+  font-family: var(--font-mono);
+  color: var(--up);
+  background: var(--up-soft);
+  border-color: transparent;
+  font-weight: 600;
+}
+
+.badge--accent {
+  color: var(--accent);
+  background: var(--accent-soft);
+  border-color: var(--accent-line);
+}
+
+.badge--unknown {
+  color: var(--text-faint);
+  font-style: italic;
+  font-family: var(--font-sans);
+}
+
+.badge--lang {
+  font-family: var(--font-sans);
+}
+
+.badge--lang::before {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: hsl(var(--hue) 62% 52%);
+}
+
+.chip-row {
+  display: flex;
+  gap: 7px;
+  flex-wrap: wrap;
+}
+
+/* ------------------------------------------------------------------ tabs */
+
+.tabs {
+  display: inline-flex;
+  gap: 3px;
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+  border-radius: var(--radius);
+  padding: 3px;
+  flex-wrap: wrap;
+}
+
+.tabs a {
+  padding: 6px 16px;
+  border-radius: var(--radius-sm);
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
+.tabs a:hover {
+  color: var(--text);
+}
+
+.tabs a[aria-current='page'] {
+  background: var(--surface);
+  color: var(--text);
+  box-shadow: var(--shadow);
+  font-weight: 600;
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex-wrap: wrap;
+  margin-bottom: 26px;
+}
+
+.toolbar__meta {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--text-faint);
+}
+
+/* ------------------------------------------------------------- repo cards */
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
+  gap: 18px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.repo-card {
+  display: flex;
+  flex-direction: column;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.repo-card:hover {
+  border-color: var(--accent-line);
+  box-shadow: var(--shadow-lift);
+}
+
+.repo-card__body {
+  padding: 16px 18px 14px;
+  flex: 1;
+  /* The accent rule separates body from footer and is the card's only colour
+     commitment, so it reads as one family across the grid. */
+  border-bottom: 2px solid var(--accent-line);
+}
+
+.repo-card__top {
+  display: grid;
+  grid-template-columns: 30px 34px 1fr;
+  gap: 11px;
+  align-items: start;
+}
+
+.rank {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 9px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--text-muted);
+}
+
+/* The podium reads at a glance without needing to parse the number. */
+.rank--1 {
+  background: color-mix(in srgb, var(--gold) 20%, transparent);
+  border-color: color-mix(in srgb, var(--gold) 45%, transparent);
+  color: var(--gold);
+}
+
+.rank--2 {
+  background: color-mix(in srgb, var(--silver) 20%, transparent);
+  border-color: color-mix(in srgb, var(--silver) 45%, transparent);
+  color: var(--silver);
+}
+
+.rank--3 {
+  background: color-mix(in srgb, var(--bronze) 20%, transparent);
+  border-color: color-mix(in srgb, var(--bronze) 45%, transparent);
+  color: var(--bronze);
+}
+
+.repo-card__avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 9px;
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+}
+
+.repo-card__name {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+  line-height: 1.35;
+  /* One line, clipped. Wrapping pushes every element below it out of
+     alignment with the neighbouring cards. */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.repo-card__name .owner {
+  color: var(--text-muted);
+}
+
+.repo-card__name b {
+  font-weight: 700;
+}
+
+.repo-card__name:hover b {
+  color: var(--accent);
+}
+
+.repo-card__desc {
+  color: var(--text-muted);
+  font-size: 0.88rem;
+  line-height: 1.55;
+  margin: 11px 0 12px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  min-height: 2.7em;
+}
+
+.repo-card__meta {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.repo-card__foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 11px 18px;
+  background: var(--surface-2);
+  font-size: 0.8rem;
+}
+
+.repo-card__foot .go {
+  color: var(--accent);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.repo-card__foot .go:hover {
+  color: var(--accent-hover);
+}
+
+/* -------------------------------------------------------------- repo page */
+
+.repo-head {
+  display: flex;
+  gap: 18px;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+.repo-head__avatar {
+  width: 60px;
+  height: 60px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+}
+
+.repo-head__body {
+  flex: 1 1 320px;
+  min-width: 0;
+}
+
+.repo-head h1.mono {
+  font-family: var(--font-mono);
+  font-size: clamp(1.4rem, 1.05rem + 1.6vw, 2.1rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  word-break: break-word;
+}
+
+.repo-head h1.mono .owner {
+  color: var(--text-muted);
+  font-weight: 400;
+}
+
+.grid-2 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 18px;
+}
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+}
+
+.kv {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 9px 20px;
+  font-size: 0.9rem;
+  padding: 18px;
+  margin: 0;
+}
+
+.kv dt {
+  color: var(--text-muted);
+}
+
+.kv dd {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------------------------------------------------------------- tables */
+
+.table-scroll {
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 0.9rem;
+}
+
+th,
+td {
+  text-align: left;
+  padding: 11px 16px;
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+
+th {
+  font-size: 0.74rem;
+  font-weight: 600;
+  color: var(--text-faint);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+tbody tr:hover {
+  background: var(--surface-2);
+}
+
+tr:last-child td {
+  border-bottom: none;
+}
+
+td.num {
+  text-align: right;
+}
+
+td a:hover {
+  color: var(--accent);
+}
+
+/* ------------------------------------------------------------------ chart */
+
+.chart {
+  padding: 20px;
+}
+
+.chart svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.chart__legend {
+  display: flex;
+  gap: 18px;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--text-faint);
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+
+.chart__swatch {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  margin-right: 6px;
+  vertical-align: -1px;
+}
+
+.chart__empty {
+  padding: 34px 20px;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+/* ------------------------------------------------------------------ prose */
+
+.prose {
+  max-width: 68ch;
+}
+
+.prose h2 {
+  margin: 38px 0 12px;
+}
+
+.prose p {
+  color: var(--text-muted);
+}
+
+/* ------------------------------------------------------------- pill grid */
+
+.pill-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(196px, 1fr));
+  gap: 10px;
+}
+
+.pill {
+  border: 1px solid var(--border);
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: 12px 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 10px;
+  font-weight: 500;
+}
+
+.pill:hover {
+  border-color: var(--accent-line);
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.pill__count {
+  font-family: var(--font-mono);
+  color: var(--text-faint);
+  font-size: 0.78rem;
+}
+
+/* ------------------------------------------------------------ quick menu */
+/* Fixed controls in the bottom-right corner. Kept clear of the viewport edge
+   on small screens, where thumbs and browser chrome both live. */
+
+.quick-menu {
+  position: fixed;
+  right: 18px;
+  bottom: 18px;
+  z-index: 30;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  align-items: center;
+}
+
+.quick-btn {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: color-mix(in srgb, var(--surface) 92%, transparent);
+  backdrop-filter: blur(8px);
+  color: var(--text-muted);
+  cursor: pointer;
+  box-shadow: var(--shadow-lift);
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 0;
+  transition: color 0.15s ease, border-color 0.15s ease, opacity 0.2s ease,
+    transform 0.2s ease, background 0.15s ease;
+}
+
+.quick-btn:hover {
+  color: var(--accent);
+  border-color: var(--accent-line);
+  background: var(--accent-soft);
+}
+
+.quick-btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.quick-btn--accent {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+.quick-btn--accent:hover {
+  background: var(--accent-hover);
+  border-color: var(--accent-hover);
+  color: #fff;
+}
+
+/* Back-to-top only earns its place once there is something to scroll back
+   from; it stays in the DOM so its position never shifts the others. */
+.quick-btn.is-hidden {
+  opacity: 0;
+  transform: translateY(8px) scale(0.9);
+  pointer-events: none;
+}
+
+@media (max-width: 620px) {
+  .quick-menu {
+    right: 12px;
+    bottom: 12px;
+  }
+
+  .quick-btn {
+    width: 38px;
+    height: 38px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .quick-btn {
+    transition: none;
+  }
+}
+
+/* The assistant list expands above the dock buttons. Labelled rather than
+   iconified: four unfamiliar logos in a column are a guessing game. */
+
+.ai-list {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-bottom: 4px;
+  padding: 6px;
+  background: color-mix(in srgb, var(--surface) 95%, transparent);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-lift);
+  min-width: 152px;
+}
+
+.ai-list__item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 7px 11px;
+  border-radius: var(--radius-sm);
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text);
+}
+
+.ai-list__item:hover {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.ai-list__item span {
+  color: var(--text-faint);
+  font-size: 0.75rem;
+}
+
+.ai-list__item:hover span {
+  color: var(--accent);
+}
+
+.quick-btn.is-active {
+  color: var(--accent);
+  border-color: var(--accent-line);
+  background: var(--accent-soft);
+}
+
+.quick-btn--text {
+  text-decoration: none;
+}
+
+.do-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 10px;
+  max-width: 68ch;
+}
+
+.do-list li {
+  position: relative;
+  padding-left: 26px;
+  color: var(--text-muted);
+}
+
+.do-list li::before {
+  content: '';
+  position: absolute;
+  left: 4px;
+  top: 0.62em;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--accent);
+}

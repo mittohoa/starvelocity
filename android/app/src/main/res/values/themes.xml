@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Compose supplies the real colours; this only has to hand the window a
+         sane background before the first frame. -->
+    <style name="Theme.StarVelocity" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:windowBackground">@color/window_background</item>
+    </style>
+</resources>

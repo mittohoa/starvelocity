@@ -1,0 +1,13 @@
+node_modules/
+data/*.db
+data/*.db-shm
+data/*.db-wal
+logs/
+.env
+.env.local
+
+# Signed bundle: a build artifact, and 3.4 MB of binary. Rebuild it, do not commit it.
+play/*.aab
+
+# Device captures are build artifacts too, and PNGs of this size add up.
+play/screenshots/

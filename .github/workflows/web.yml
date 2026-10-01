@@ -1,0 +1,86 @@
+name: web
+
+# Rebuilds and publishes the static site. The site is a pure function of the
+# collector database, so it is rebuilt whenever that database changes — there is
+# nothing to compute per request and therefore no server to pay for.
+on:
+  workflow_run:
+    workflows: ['collect']
+    types: [completed]
+  workflow_dispatch:
+    inputs:
+      repo_page_limit:
+        description: 'How many repo pages to build per locale'
+        type: string
+        default: '600'
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  build:
+    # A failed collection leaves the database untouched, so there is nothing new
+    # to publish. Skip rather than rebuilding identical output.
+    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+
+      - name: Fetch collector database
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          mkdir -p data
+          if ! gh release download db --pattern 'starvelocity.db.gz' --clobber; then
+            echo "::error::No collector database published yet. Run the collect workflow first."
+            exit 1
+          fi
+          gunzip -c starvelocity.db.gz > data/starvelocity.db
+          echo "database: $(du -h data/starvelocity.db | cut -f1)"
+
+      - name: Install
+        working-directory: web
+        run: npm ci
+
+      - name: Build
+        working-directory: web
+        env:
+          # Origin only. BASE_PATH is appended separately, so do not include it here.
+          SITE_URL: ${{ vars.SITE_URL || format('https://{0}.github.io', github.repository_owner) }}
+          # A project page is served from /<repo>/. Clear this variable for a
+          # user page, an org page, or a custom domain.
+          BASE_PATH: ${{ vars.BASE_PATH }}
+          REPO_PAGE_LIMIT: ${{ inputs.repo_page_limit || '600' }}
+        run: |
+          npm run build
+          echo "pages: $(find out -name '*.html' | wc -l), size: $(du -sh out | cut -f1)"
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: web/out
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
